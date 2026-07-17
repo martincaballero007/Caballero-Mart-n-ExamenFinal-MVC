@@ -1,21 +1,38 @@
 package org.unisiga.model;
 
-/**
- * Estructura de Calificación de Tres Vías. Unifica al Alumno (Inscripción) con el Examen (Evaluación).
- */
 public class Calificacion {
-    private float nota;
-    private Inscripcion inscripcion; // Vía 1 (Quién rinde en qué sección)
-    private Evaluacion evaluacion;   // Vía 2 (Qué examen unificado de cátedra es)
+    private Float nota;
+    
+    private Matricula matricula; 
+    private Evaluacion evaluacion;
 
-    public Calificacion(float nota, Inscripcion inscripcion, Evaluacion evaluacion) {
+    public Calificacion(Float nota, Matricula matricula, Evaluacion evaluacion) {
         this.nota = nota;
-        this.inscripcion = inscripcion;
+        this.matricula = matricula;
         this.evaluacion = evaluacion;
     }
 
-    public float getNota() { return nota; }
-    public void setNota(float nota) { this.nota = nota; }
-    public Inscripcion getInscripcion() { return inscripcion; }
-    public Evaluacion getEvaluacion() { return evaluacion; }
+    public Float getNota() {
+        return nota;
+    }
+
+    public void setNota(Float nota) {
+        this.nota = nota;
+    }
+
+    public Matricula getMatricula() {
+        return matricula;
+    }
+
+    public void setMatricula(Matricula matricula) {
+        this.matricula = matricula;
+    }
+
+    public Evaluacion getEvaluacion() {
+        return evaluacion;
+    }
+
+    public void setEvaluacion(Evaluacion evaluacion) {
+        this.evaluacion = evaluacion;
+    }
 }

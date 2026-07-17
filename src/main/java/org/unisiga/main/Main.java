@@ -2,14 +2,14 @@ package org.unisiga.main;
 
 import org.unisiga.controller.InscripcionController;
 import org.unisiga.model.*;
-import org.unisiga.view.ConsoleView;
+import org.unisiga.view.FrmLogin;
 
 /**
  * Orquestador principal de pruebas. Configura el escenario inicial de la pauta.
  */
 public class Main {
     public static void main(String[] args) {
-        ConsoleView vista = new ConsoleView();
+        FrmLogin vista = new FrmLogin();
         InscripcionController controller = new InscripcionController();
 
         vista.desplegarMenu();

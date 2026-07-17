@@ -1,9 +1,5 @@
 package org.unisiga.model;
 
-/**
- * Clase Abstracta Base que representa a cualquier miembro de la universidad.
- * [EVALUACIÓN]: El estudiante debe comprender el concepto de herencia y atributos protegidos.
- */
 public abstract class MiembroUniversitario {
     protected String rut;
     protected String nombre;
@@ -15,17 +11,32 @@ public abstract class MiembroUniversitario {
         this.correoInstitucional = correoInstitucional;
     }
 
-    /**
-     * TODO: Firma abstracta para el inicio de sesión.
-     * Cada subclase (Estudiante/Académico) debe sobreescribirla con sus reglas de negocio.
-     */
-    public abstract boolean login(String password);
+    public Boolean login() {
+        // Lógica de autenticación
+        return true; 
+    }
 
-    // Getters y Setters
-    public String getRut() { return rut; }
-    public void setRut(String rut) { this.rut = rut; }
-    public String getNombre() { return nombre; }
-    public void setNombre(String nombre) { this.nombre = nombre; }
-    public String getCorreoInstitucional() { return correoInstitucional; }
-    public void setCorreoInstitucional(String correo) { this.correoInstitucional = correo; }
+    public String getRut() {
+        return rut;
+    }
+
+    public void setRut(String rut) {
+        this.rut = rut;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getCorreoInstitucional() {
+        return correoInstitucional;
+    }
+
+    public void setCorreoInstitucional(String correoInstitucional) {
+        this.correoInstitucional = correoInstitucional;
+    }
 }

@@ -4,29 +4,60 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-/**
- * Clase de Asociación que resuelve la relación N:M entre Estudiante y Sección.
- */
-public class Inscripcion {
-    private Estudiante estudiante;
-    private Seccion seccion;
-    private String estadoInscripcion; // "Inscrito", "Aprobado", "Reprobado"
+public class Matricula {
+    private String estadoInscripcion;
     private Date fechaInscripcion;
+    
+    private Estudiante estudiante;
+    private Grupo grupo;
     private List<Calificacion> calificaciones;
 
-    public Inscripcion(Estudiante estudiante, Seccion seccion) {
+    public Matricula(String estadoInscripcion, Date fechaInscripcion, 
+                     Estudiante estudiante, Grupo grupo) {
+        this.estadoInscripcion = estadoInscripcion;
+        this.fechaInscripcion = fechaInscripcion;
         this.estudiante = estudiante;
-        this.seccion = seccion;
-        this.estadoInscripcion = "Inscrito";
-        this.fechaInscripcion = new Date();
+        this.grupo = grupo;
         this.calificaciones = new ArrayList<>();
     }
 
-    // Getters y Setters
-    public Estudiante getEstudiante() { return estudiante; }
-    public Seccion getSeccion() { return seccion; }
-    public String getEstadoInscripcion() { return estadoInscripcion; }
-    public void setEstadoInscripcion(String estado) { this.estadoInscripcion = estado; }
-    public Date getFechaInscripcion() { return fechaInscripcion; }
-    public List<Calificacion> getCalificaciones() { return calificaciones; }
+    public String getEstadoInscripcion() {
+        return estadoInscripcion;
+    }
+
+    public void setEstadoInscripcion(String estadoInscripcion) {
+        this.estadoInscripcion = estadoInscripcion;
+    }
+
+    public Date getFechaInscripcion() {
+        return fechaInscripcion;
+    }
+
+    public void setFechaInscripcion(Date fechaInscripcion) {
+        this.fechaInscripcion = fechaInscripcion;
+    }
+
+    public Estudiante getEstudiante() {
+        return estudiante;
+    }
+
+    public void setEstudiante(Estudiante estudiante) {
+        this.estudiante = estudiante;
+    }
+
+    public Grupo getGrupo() {
+        return grupo;
+    }
+
+    public void setGrupo(Grupo grupo) {
+        this.grupo = grupo;
+    }
+
+    public List<Calificacion> getCalificaciones() {
+        return calificaciones;
+    }
+
+    public void setCalificaciones(List<Calificacion> calificaciones) {
+        this.calificaciones = calificaciones;
+    }
 }

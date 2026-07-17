@@ -3,36 +3,70 @@ package org.unisiga.model;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Materialización física de una asignatura en el semestre.
- */
-public class Seccion {
-    private char idGrupo;
-    private int cupoMaximo;
+public class Grupo {
+    private Character idGrupo;
+    private Integer cupoMaximo;
     private String horario;
-    private Asignatura asignatura; // Contenedor (Composición)
-    private Academico docenteDicta;
-    private List<Inscripcion> inscripciones;
+    
+    private Asignatura asignatura;
+    private Academico profesor; 
+    private List<Matricula> matriculas; 
 
-    // [DISEÑO TÉCNICO]: Constructor package-private para forzar que solo 'Asignatura' (mismo package) lo invoque.
-    Seccion(char idGrupo, int cupoMaximo, String horario, Asignatura asignatura) {
+    public Grupo(Character idGrupo, Integer cupoMaximo, String horario, 
+                 Asignatura asignatura, Academico profesor) {
         this.idGrupo = idGrupo;
         this.cupoMaximo = cupoMaximo;
         this.horario = horario;
         this.asignatura = asignatura;
-        this.inscripciones = new ArrayList<>();
+        this.profesor = profesor;
+        this.matriculas = new ArrayList<>();
     }
 
-    public void asignarDocente(Academico docente) {
-        // TODO: Asignar al docente de forma segura controlando la asociación bidireccional
-        throw new UnsupportedOperationException("Método asignarDocente() no implementado aún.");
+    public Character getIdGrupo() {
+        return idGrupo;
     }
 
-    // Getters y Setters
-    public char getIdGrupo() { return idGrupo; }
-    public int getCupoMaximo() { return cupoMaximo; }
-    public String getHorario() { return horario; }
-    public Asignatura getAsignatura() { return asignatura; }
-    public Academico getDocenteDicta() { return docenteDicta; }
-    public List<Inscripcion> getInscripciones() { return inscripciones; }
+    public void setIdGrupo(Character idGrupo) {
+        this.idGrupo = idGrupo;
+    }
+
+    public Integer getCupoMaximo() {
+        return cupoMaximo;
+    }
+
+    public void setCupoMaximo(Integer cupoMaximo) {
+        this.cupoMaximo = cupoMaximo;
+    }
+
+    public String getHorario() {
+        return horario;
+    }
+
+    public void setHorario(String horario) {
+        this.horario = horario;
+    }
+
+    public Asignatura getAsignatura() {
+        return asignatura;
+    }
+
+    public void setAsignatura(Asignatura asignatura) {
+        this.asignatura = asignatura;
+    }
+
+    public Academico getProfesor() {
+        return profesor;
+    }
+
+    public void setProfesor(Academico profesor) {
+        this.profesor = profesor;
+    }
+
+    public List<Matricula> getMatriculas() {
+        return matriculas;
+    }
+
+    public void setMatriculas(List<Matricula> matriculas) {
+        this.matriculas = matriculas;
+    }
 }

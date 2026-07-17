@@ -3,42 +3,54 @@ package org.unisiga.model;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Representa al alumno de la universidad.
- * [EVALUACIÓN]: El estudiante debe implementar el encapsulamiento y el método de inscripción.
- */
 public class Estudiante extends MiembroUniversitario {
     private String matricula;
-    private int anioIngreso;
-    private float promedioPpa;
-    private List<Inscripcion> inscripciones;
+    private Integer anioIngreso;
+    private Float promedio;
+    private List<Matricula> historialMatriculas;
 
-    public Estudiante(String rut, String nombre, String correo, String matricula, int anioIngreso, float promedioPpa) {
-        super(rut, nombre, correo);
+    public Estudiante(String rut, String nombre, String correoInstitucional, 
+                      String matricula, Integer anioIngreso, Float promedio) {
+        super(rut, nombre, correoInstitucional);
         this.matricula = matricula;
         this.anioIngreso = anioIngreso;
-        this.promedioPpa = promedioPpa;
-        this.inscripciones = new ArrayList<>();
+        this.promedio = promedio;
+        this.historialMatriculas = new ArrayList<>();
     }
 
-    @Override
-    public boolean login(String password) {
-        // TODO: Implementar validación simulada de clave del estudiante (largo mínimo de 8 caracteres)
-        throw new UnsupportedOperationException("Método login() no implementado aún.");
+    public void inscribirSeccion() {
+        // Lógica para solicitar inscripción a un grupo
     }
 
-    /**
-     * Realiza el proceso de inscripción en una sección.
-     * [REGLAS]: Validar que la sección no sea nula y que cuente con cupos disponibles.
-     */
-    public void inscribirSeccion(Seccion seccion) {
-        // TODO: Implementar la lógica del control de cupos y la creación de la clase de asociación 'Inscripcion'
-        // No olvides agregar la nueva inscripción tanto a la lista de este estudiante como a la de la sección.
-        throw new UnsupportedOperationException("Método inscribirSeccion() no implementado aún.");
+    public String getMatricula() {
+        return matricula;
     }
 
-    // Getters y Setters
-    public String getMatricula() { return matricula; }
-    public float getPromedioPpa() { return promedioPpa; }
-    public List<Inscripcion> getInscripciones() { return inscripciones; }
+    public void setMatricula(String matricula) {
+        this.matricula = matricula;
+    }
+
+    public Integer getAnioIngreso() {
+        return anioIngreso;
+    }
+
+    public void setAnioIngreso(Integer anioIngreso) {
+        this.anioIngreso = anioIngreso;
+    }
+
+    public Float getPromedio() {
+        return promedio;
+    }
+
+    public void setPromedio(Float promedio) {
+        this.promedio = promedio;
+    }
+
+    public List<Matricula> getHistorialMatriculas() {
+        return historialMatriculas;
+    }
+
+    public void setHistorialMatriculas(List<Matricula> historialMatriculas) {
+        this.historialMatriculas = historialMatriculas;
+    }
 }
