@@ -66,6 +66,13 @@ public class Grupo {
         this.profesor = profesor;
     }
 
+    public void agregarMatricula(Matricula m) {
+        if (!hayCupo()) {
+            throw new IllegalStateException("El grupo " + idGrupo + " ya alcanzó su cupo máximo de " + cupoMaximo + " estudiantes.");
+        }
+        this.matriculas.add(m);
+    }
+
     public List<Matricula> getMatriculas() {
         return matriculas;
     }

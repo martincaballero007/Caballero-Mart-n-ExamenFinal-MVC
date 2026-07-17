@@ -28,68 +28,70 @@ public class FrmCalificaciones extends javax.swing.JInternalFrame {
         
         jComboBox1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                cargarEvaluacionesYAlumnos();
+                if (controller != null) controller.onGrupoSeleccionado();
+            }
+        });
+        
+        jComboBox2.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (controller != null) controller.onEvaluacionSeleccionada();
             }
         });
         
         jButton1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                guardarNotas();
+                if (controller != null) controller.procesarGuardado();
             }
         });
     }
 
     public void setController(CalificacionesController controller) {
         this.controller = controller;
-        cargarGrupos();
     }
     
-    private void cargarGrupos() {
+    public int getGrupoSeleccionadoIndex() {
+        return jComboBox1.getSelectedIndex();
+    }
+    
+    public int getEvaluacionSeleccionadaIndex() {
+        return jComboBox2.getSelectedIndex();
+    }
+    
+    public void setGruposItems(String[] items) {
         jComboBox1.removeAllItems();
-        if (controller == null) return;
-        for (Grupo g : controller.getGruposDictados()) {
-            jComboBox1.addItem(g.getAsignatura().getNombre() + " - Grupo " + g.getIdGrupo());
+        for (String item : items) {
+            jComboBox1.addItem(item);
         }
     }
     
-    private void cargarEvaluacionesYAlumnos() {
+    public void setEvaluacionesItems(String[] items) {
         jComboBox2.removeAllItems();
-        DefaultTableModel model = new DefaultTableModel(new String[]{"Alumno", "Nota"}, 0);
-        jTable1.setModel(model);
-        
-        if (controller == null || jComboBox1.getSelectedIndex() == -1) return;
-        
-        Grupo g = controller.getGruposDictados().get(jComboBox1.getSelectedIndex());
-        
-        // Cargar Evaluaciones
-        for (Evaluacion ev : g.getAsignatura().getEvaluaciones()) {
-            jComboBox2.addItem(ev.getTitulo() + " (" + ev.getPonderacion() + "%)");
+        for (String item : items) {
+            jComboBox2.addItem(item);
         }
-        
-        // Cargar Alumnos
-        for (Matricula m : g.getMatriculas()) {
-            model.addRow(new Object[]{
-                m.getEstudiante().getNombre(),
-                ""
-            });
+    }
+    
+    public void setAlumnosTable(Object[][] data) {
+        DefaultTableModel model = new DefaultTableModel(new String[]{"Matrícula", "Nombre Estudiante", "Nota"}, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return column == 2; // Solo la columna "Nota" es editable
+            }
+        };
+        for (Object[] row : data) {
+            model.addRow(row);
         }
         jTable1.setModel(model);
     }
     
-    private void guardarNotas() {
-        if (controller == null || jComboBox1.getSelectedIndex() == -1 || jComboBox2.getSelectedIndex() == -1) return;
-        
-        Grupo g = controller.getGruposDictados().get(jComboBox1.getSelectedIndex());
-        Evaluacion ev = g.getAsignatura().getEvaluaciones().get(jComboBox2.getSelectedIndex());
-        
+    public List<String> getNotasIngresadas() {
+        List<String> notas = new ArrayList<>();
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-        List<String> notasList = new ArrayList<>();
-        
         for (int i = 0; i < model.getRowCount(); i++) {
-            notasList.add((String) model.getValueAt(i, 1));
+            Object val = model.getValueAt(i, 2);
+            notas.add(val != null ? val.toString() : "");
         }
-        
-        controller.guardarNotas(g, ev, notasList);
+        return notas;
     }
 
     /**

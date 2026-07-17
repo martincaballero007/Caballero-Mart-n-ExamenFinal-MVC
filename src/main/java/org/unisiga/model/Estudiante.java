@@ -18,8 +18,17 @@ public class Estudiante extends MiembroUniversitario {
         this.historialMatriculas = new ArrayList<>();
     }
 
-    public void inscribirSeccion() {
-        // Lógica para solicitar inscripción a un grupo
+    public void agregarMatricula(Matricula m) {
+        if (!tienePrerrequisitosAprobados(m.getGrupo().getAsignatura())) {
+            throw new IllegalStateException("El estudiante no cumple con los prerrequisitos para: " + m.getGrupo().getAsignatura().getNombre());
+        }
+        for (Matricula matriculaActual : historialMatriculas) {
+            if (matriculaActual.getGrupo().getAsignatura().getCodigo().equals(m.getGrupo().getAsignatura().getCodigo()) && 
+                !matriculaActual.getEstadoInscripcion().equalsIgnoreCase("Reprobado")) {
+                throw new IllegalStateException("El estudiante ya cursó o está cursando esta asignatura.");
+            }
+        }
+        this.historialMatriculas.add(m);
     }
 
     public boolean tienePrerrequisitosAprobados(Asignatura asignatura) {

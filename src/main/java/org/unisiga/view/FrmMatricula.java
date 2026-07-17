@@ -8,7 +8,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.table.DefaultTableModel;
 import org.unisiga.controller.MatriculaController;
-import org.unisiga.model.*;
 
 /**
  *
@@ -26,69 +25,49 @@ public class FrmMatricula extends javax.swing.JInternalFrame {
         
         jComboBox1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                cargarGrupos();
+                if (controller != null) controller.onAsignaturaSeleccionada();
             }
         });
         
         jButton1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                inscribir();
+                if (controller != null) controller.onInscribirClicked();
             }
         });
     }
 
     public void setController(MatriculaController controller) {
         this.controller = controller;
-        refrescarDatos();
     }
     
-    public void refrescarDatos() {
-        cargarAsignaturas();
-        cargarHistorial();
+    public int getAsignaturaSeleccionadaIndex() {
+        return jComboBox1.getSelectedIndex();
     }
     
-    private void cargarAsignaturas() {
+    public int getGrupoSeleccionadoIndex() {
+        return jComboBox2.getSelectedIndex();
+    }
+    
+    public void setAsignaturasItems(String[] items) {
         jComboBox1.removeAllItems();
-        if (controller != null) {
-            for (Asignatura a : controller.getAsignaturas()) {
-                jComboBox1.addItem(a.getCodigo() + " - " + a.getNombre());
-            }
+        for (String item : items) {
+            jComboBox1.addItem(item);
         }
     }
     
-    private void cargarGrupos() {
+    public void setGruposItems(String[] items) {
         jComboBox2.removeAllItems();
-        if (controller != null && jComboBox1.getSelectedIndex() != -1) {
-            Asignatura a = controller.getAsignaturas().get(jComboBox1.getSelectedIndex());
-            for (Grupo g : controller.getGruposPorAsignatura(a)) {
-                jComboBox2.addItem("Grupo " + g.getIdGrupo() + " | Cupos: " + 
-                        (g.getCupoMaximo() - g.getMatriculas().size()));
-            }
+        for (String item : items) {
+            jComboBox2.addItem(item);
         }
     }
     
-    private void cargarHistorial() {
-        if (controller == null) return;
+    public void setHistorialTable(Object[][] data) {
         DefaultTableModel model = new DefaultTableModel(new String[]{"Asignatura", "Grupo", "Estado", "Fecha"}, 0);
-        for (Matricula m : controller.getHistorialUsuario()) {
-            model.addRow(new Object[]{
-                m.getGrupo().getAsignatura().getNombre(),
-                m.getGrupo().getIdGrupo(),
-                m.getEstadoInscripcion(),
-                m.getFechaInscripcion().toString()
-            });
+        for (Object[] row : data) {
+            model.addRow(row);
         }
         jTable2.setModel(model);
-    }
-    
-    private void inscribir() {
-        if (controller == null || jComboBox1.getSelectedIndex() == -1 || jComboBox2.getSelectedIndex() == -1) return;
-        
-        Asignatura a = controller.getAsignaturas().get(jComboBox1.getSelectedIndex());
-        Grupo g = controller.getGruposPorAsignatura(a).get(jComboBox2.getSelectedIndex());
-        
-        controller.inscribirDesdeLista(a, g);
-        refrescarDatos();
     }
 
     /**

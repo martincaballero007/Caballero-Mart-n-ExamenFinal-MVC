@@ -13,6 +13,7 @@ org\unisiga\controller\MenuController.class
 org\unisiga\controller\LoginController.class
 org\unisiga\view\FrmCrearGrupo.class
 org\unisiga\view\FrmMatricula$2.class
+org\unisiga\view\FrmCalificaciones$4.class
 org\unisiga\view\FrmCalificaciones$1.class
 org\unisiga\view\FrmMenuPrincipal$1.class
 org\unisiga\view\FrmMenuPrincipal.class
@@ -20,6 +21,7 @@ org\unisiga\model\Database.class
 org\unisiga\model\Departamento.class
 org\unisiga\view\FrmLogin$1.class
 org\unisiga\model\Asignatura.class
+org\unisiga\view\FrmCalificaciones$3.class
 org\unisiga\main\Main.class
 org\unisiga\view\FrmMatricula$1.class
 org\unisiga\controller\CalificacionesController.class

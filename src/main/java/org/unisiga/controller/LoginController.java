@@ -17,7 +17,10 @@ public class LoginController {
         this.db = db;
     }
 
-    public void iniciarSesion(String correo, String password) {
+    public void procesarLogin() {
+        String correo = vista.getCorreo();
+        String password = vista.getPassword();
+        
         MiembroUniversitario usuarioLogueado = null;
         for (Estudiante e : db.getEstudiantes()) {
             if (e.getCorreoInstitucional().equalsIgnoreCase(correo) && e.getPassword().equals(password)) {

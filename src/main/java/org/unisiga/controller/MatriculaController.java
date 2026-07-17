@@ -1,145 +1,104 @@
 package org.unisiga.controller;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import javax.swing.JOptionPane;
-import javax.swing.JTextField;
-import org.unisiga.model.Asignatura;
-import org.unisiga.model.Database;
-import org.unisiga.model.Estudiante;
-import org.unisiga.model.Grupo;
-import org.unisiga.model.Matricula;
+import org.unisiga.model.*;
 import org.unisiga.view.FrmMatricula;
 
 public class MatriculaController {
     private FrmMatricula vista;
     private Database db;
+    private List<Asignatura> asignaturasActuales;
+    private List<Grupo> gruposActuales;
 
     public MatriculaController(FrmMatricula vista, Database db) {
         this.vista = vista;
         this.db = db;
+        this.asignaturasActuales = db.getAsignaturas();
+        this.gruposActuales = new ArrayList<>();
+        inicializarVista();
     }
-
-    public List<Asignatura> getAsignaturas() {
-        return db.getAsignaturas();
+    
+    private void inicializarVista() {
+        String[] asigItems = new String[asignaturasActuales.size()];
+        for (int i = 0; i < asignaturasActuales.size(); i++) {
+            asigItems[i] = asignaturasActuales.get(i).getCodigo() + " - " + asignaturasActuales.get(i).getNombre();
+        }
+        vista.setAsignaturasItems(asigItems);
+        actualizarHistorial();
     }
-
-    public List<Grupo> getGruposPorAsignatura(Asignatura a) {
-        List<Grupo> resultado = new ArrayList<>();
+    
+    public void onAsignaturaSeleccionada() {
+        int asigIdx = vista.getAsignaturaSeleccionadaIndex();
+        if (asigIdx == -1) return;
+        
+        Asignatura a = asignaturasActuales.get(asigIdx);
+        gruposActuales = new ArrayList<>();
         for (Grupo g : db.getGrupos()) {
             if (g.getAsignatura().getCodigo().equals(a.getCodigo())) {
-                resultado.add(g);
+                gruposActuales.add(g);
             }
         }
-        return resultado;
+        
+        String[] grupoItems = new String[gruposActuales.size()];
+        for (int i = 0; i < gruposActuales.size(); i++) {
+            Grupo g = gruposActuales.get(i);
+            grupoItems[i] = "Grupo " + g.getIdGrupo() + " | Cupos: " + (g.getCupoMaximo() - g.getMatriculas().size());
+        }
+        vista.setGruposItems(grupoItems);
     }
-
-    public List<Matricula> getHistorialUsuario() {
-        if (db.getUsuarioLogueado() instanceof Estudiante) {
-            return ((Estudiante) db.getUsuarioLogueado()).getHistorialMatriculas();
+    
+    private void actualizarHistorial() {
+        if (!(db.getUsuarioLogueado() instanceof Estudiante)) return;
+        Estudiante estudiante = (Estudiante) db.getUsuarioLogueado();
+        List<Matricula> historial = estudiante.getHistorialMatriculas();
+        Object[][] data = new Object[historial.size()][4];
+        
+        for (int i = 0; i < historial.size(); i++) {
+            Matricula m = historial.get(i);
+            data[i][0] = m.getGrupo().getAsignatura().getNombre();
+            data[i][1] = m.getGrupo().getIdGrupo();
+            data[i][2] = m.getEstadoInscripcion();
+            data[i][3] = m.getFechaInscripcion().toString();
         }
-        return new ArrayList<>();
+        vista.setHistorialTable(data);
     }
-
-    public void inscribirDesdeLista(Asignatura a, Grupo g) {
-        if (!(db.getUsuarioLogueado() instanceof Estudiante)) {
-            JOptionPane.showMessageDialog(vista, "Solo los estudiantes pueden inscribirse.");
-            return;
-        }
-        Estudiante est = (Estudiante) db.getUsuarioLogueado();
-        String res = procesarInscripcion(est, a, g);
-        JOptionPane.showMessageDialog(vista, res);
-    }
-
-    // --- OPCIÓN DEL POPUP MOSTRADO EN LA IMAGEN ---
-    public void mostrarFormularioInscripcionManual() {
-        JTextField matField = new JTextField();
-        if (db.getUsuarioLogueado() instanceof Estudiante) {
-            matField.setText(((Estudiante) db.getUsuarioLogueado()).getMatricula());
-            matField.setEditable(false);
-        }
-        JTextField asigField = new JTextField();
-        JTextField grupoField = new JTextField();
-
-        Object[] message = {
-            "Matrícula del Estudiante:", matField,
-            "Código Asignatura:", asigField,
-            "Grupo/Sección (Ej. A):", grupoField
-        };
-
-        int option = JOptionPane.showConfirmDialog(vista, message, "Formulario de Inscripción", JOptionPane.OK_CANCEL_OPTION);
-        if (option == JOptionPane.OK_OPTION) {
-            String matriculaStr = matField.getText();
-            String codAsig = asigField.getText();
-            String idGrupoStr = grupoField.getText();
-
-            if (matriculaStr.isEmpty() || codAsig.isEmpty() || idGrupoStr.isEmpty()) {
-                JOptionPane.showMessageDialog(vista, "Llene todos los campos.");
-                return;
-            }
-
-            Estudiante est = buscarEstudiante(matriculaStr);
-            Asignatura asig = buscarAsignatura(codAsig);
-            if (est == null || asig == null) {
-                JOptionPane.showMessageDialog(vista, "Estudiante o Asignatura no encontrada.");
-                return;
-            }
-
-            Grupo grupo = buscarGrupo(asig, idGrupoStr.charAt(0));
-            if (grupo == null) {
-                JOptionPane.showMessageDialog(vista, "Grupo no encontrado para esa asignatura.");
-                return;
-            }
-
-            String resultado = procesarInscripcion(est, asig, grupo);
-            JOptionPane.showMessageDialog(vista, resultado);
+    
+    public void onInscribirClicked() {
+        try {
+            int asigIdx = vista.getAsignaturaSeleccionadaIndex();
+            int grpIdx = vista.getGrupoSeleccionadoIndex();
             
-            // Actualizar vista pasiva si está ligada
-            vista.refrescarDatos();
-        }
-    }
-
-    private String procesarInscripcion(Estudiante estudiante, Asignatura asignatura, Grupo grupo) {
-        if (!estudiante.tienePrerrequisitosAprobados(asignatura)) {
-            return "El estudiante no cumple con los prerrequisitos para: " + asignatura.getNombre();
-        }
-        if (!grupo.hayCupo()) {
-            return "El grupo " + grupo.getIdGrupo() + " no tiene cupos disponibles.";
-        }
-        for (Matricula m : estudiante.getHistorialMatriculas()) {
-            if (m.getGrupo().getAsignatura().getCodigo().equals(asignatura.getCodigo()) && 
-                !m.getEstadoInscripcion().equalsIgnoreCase("Reprobado")) {
-                return "El estudiante ya cursó o está cursando esta asignatura.";
+            if (asigIdx == -1 || grpIdx == -1) {
+                throw new NullPointerException("Debe seleccionar una asignatura y un grupo.");
             }
-        }
-
-        Matricula nuevaMatricula = new Matricula("Cursando", new Date(), estudiante, grupo);
-        estudiante.getHistorialMatriculas().add(nuevaMatricula);
-        grupo.getMatriculas().add(nuevaMatricula);
-        return "Inscripción exitosa en " + asignatura.getNombre() + " - Grupo " + grupo.getIdGrupo();
-    }
-
-    private Estudiante buscarEstudiante(String matricula) {
-        for (Estudiante e : db.getEstudiantes()) {
-            if (e.getMatricula().equalsIgnoreCase(matricula)) return e;
-        }
-        return null;
-    }
-
-    private Asignatura buscarAsignatura(String codigo) {
-        for (Asignatura a : db.getAsignaturas()) {
-            if (a.getCodigo().equalsIgnoreCase(codigo)) return a;
-        }
-        return null;
-    }
-
-    private Grupo buscarGrupo(Asignatura a, char id) {
-        for (Grupo g : db.getGrupos()) {
-            if (g.getAsignatura().getCodigo().equals(a.getCodigo()) && g.getIdGrupo() == id) {
-                return g;
+            
+            Asignatura a = asignaturasActuales.get(asigIdx);
+            Grupo g = gruposActuales.get(grpIdx);
+            
+            if (!(db.getUsuarioLogueado() instanceof Estudiante)) {
+                throw new IllegalStateException("Solo los estudiantes pueden inscribirse.");
             }
+            Estudiante estudiante = (Estudiante) db.getUsuarioLogueado();
+            
+            Matricula m = new Matricula("Inscrito", new java.util.Date(), estudiante, g);
+            
+            // Reglas de negocio desde el modelo (arrojan excepciones)
+            estudiante.agregarMatricula(m);
+            g.agregarMatricula(m);
+            
+            JOptionPane.showMessageDialog(vista, "Inscripción exitosa.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            onAsignaturaSeleccionada(); // Actualizar cupos visuales
+            actualizarHistorial();
+            
+        } catch (NullPointerException ex) {
+            JOptionPane.showMessageDialog(vista, ex.getMessage(), "Error de Selección", JOptionPane.WARNING_MESSAGE);
+        } catch (IllegalStateException ex) {
+            JOptionPane.showMessageDialog(vista, ex.getMessage(), "Regla de Negocio", JOptionPane.WARNING_MESSAGE);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(vista, "Ocurrió un error inesperado.", "Error", JOptionPane.ERROR_MESSAGE);
         }
-        return null;
     }
 }

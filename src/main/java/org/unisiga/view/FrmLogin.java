@@ -33,6 +33,14 @@ public class FrmLogin extends javax.swing.JFrame {
     public void setController(LoginController controller) {
         this.controller = controller;
     }
+    
+    public String getCorreo() {
+        return jTextField1.getText();
+    }
+    
+    public String getPassword() {
+        return new String(jPasswordField1.getPassword());
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -130,9 +138,7 @@ public class FrmLogin extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {                                         
         if (controller != null) {
-            String correo = jTextField1.getText();
-            String pass = new String(jPasswordField1.getPassword());
-            controller.iniciarSesion(correo, pass);
+            controller.procesarLogin();
         }
     }
 
