@@ -3,6 +3,7 @@ org\unisiga\view\FrmCrearGrupo$1.class
 org\unisiga\view\FrmCrearGrupo$1$1.class
 org\unisiga\model\Estudiante.class
 org\unisiga\controller\MatriculaController.class
+org\unisiga\view\FrmMenuPrincipal$2.class
 org\unisiga\view\FrmCalificaciones$2.class
 org\unisiga\model\Grupo.class
 org\unisiga\model\Academico.class
@@ -26,3 +27,4 @@ org\unisiga\view\FrmLogin.class
 org\unisiga\view\FrmCalificaciones.class
 org\unisiga\model\Calificacion.class
 org\unisiga\view\FrmMatricula.class
+org\unisiga\view\FrmMenuPrincipal$3.class
