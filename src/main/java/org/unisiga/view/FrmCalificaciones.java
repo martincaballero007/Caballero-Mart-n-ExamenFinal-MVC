@@ -4,17 +4,92 @@
  */
 package org.unisiga.view;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.table.DefaultTableModel;
+import org.unisiga.controller.CalificacionesController;
+import org.unisiga.model.*;
+
 /**
  *
  * @author odiol
  */
 public class FrmCalificaciones extends javax.swing.JInternalFrame {
+    
+    private CalificacionesController controller;
 
     /**
      * Creates new form FrmCalificaciones
      */
     public FrmCalificaciones() {
         initComponents();
+        
+        jComboBox1.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                cargarEvaluacionesYAlumnos();
+            }
+        });
+        
+        jButton1.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                guardarNotas();
+            }
+        });
+    }
+
+    public void setController(CalificacionesController controller) {
+        this.controller = controller;
+        cargarGrupos();
+    }
+    
+    private void cargarGrupos() {
+        jComboBox1.removeAllItems();
+        if (controller == null) return;
+        for (Grupo g : controller.getGruposDictados()) {
+            jComboBox1.addItem(g.getAsignatura().getNombre() + " - Grupo " + g.getIdGrupo());
+        }
+    }
+    
+    private void cargarEvaluacionesYAlumnos() {
+        jComboBox2.removeAllItems();
+        DefaultTableModel model = new DefaultTableModel(new String[]{"Alumno", "Nota"}, 0);
+        jTable1.setModel(model);
+        
+        if (controller == null || jComboBox1.getSelectedIndex() == -1) return;
+        
+        Grupo g = controller.getGruposDictados().get(jComboBox1.getSelectedIndex());
+        
+        // Cargar Evaluaciones
+        for (Evaluacion ev : g.getAsignatura().getEvaluaciones()) {
+            jComboBox2.addItem(ev.getTitulo() + " (" + ev.getPonderacion() + "%)");
+        }
+        
+        // Cargar Alumnos
+        for (Matricula m : g.getMatriculas()) {
+            model.addRow(new Object[]{
+                m.getEstudiante().getNombre(),
+                ""
+            });
+        }
+        jTable1.setModel(model);
+    }
+    
+    private void guardarNotas() {
+        if (controller == null || jComboBox1.getSelectedIndex() == -1 || jComboBox2.getSelectedIndex() == -1) return;
+        
+        Grupo g = controller.getGruposDictados().get(jComboBox1.getSelectedIndex());
+        Evaluacion ev = g.getAsignatura().getEvaluaciones().get(jComboBox2.getSelectedIndex());
+        
+        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        List<String> notasList = new ArrayList<>();
+        
+        for (int i = 0; i < model.getRowCount(); i++) {
+            notasList.add((String) model.getValueAt(i, 1));
+        }
+        
+        controller.guardarNotas(g, ev, notasList);
     }
 
     /**
@@ -26,15 +101,80 @@ public class FrmCalificaciones extends javax.swing.JInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jLabel1 = new javax.swing.JLabel();
+        jComboBox1 = new javax.swing.JComboBox<>();
+        jLabel2 = new javax.swing.JLabel();
+        jComboBox2 = new javax.swing.JComboBox<>();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
+        jButton1 = new javax.swing.JButton();
+
+        jLabel1.setText("Elegir Grupo");
+
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        jLabel2.setText("Elegir Evaluacion ");
+
+        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null}
+            },
+            new String [] {
+                "Alumnos", "Notas"
+            }
+        ));
+        jScrollPane1.setViewportView(jTable1);
+
+        jButton1.setText("Guardar");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 394, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(33, 33, 33)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(6, 6, 6)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 264, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 114, Short.MAX_VALUE)
+                                .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(107, 107, 107))))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(141, 141, 141)
+                .addComponent(jButton1)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 274, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(15, 15, 15)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 40, Short.MAX_VALUE)
+                .addComponent(jButton1)
+                .addGap(17, 17, 17))
         );
 
         pack();
@@ -42,5 +182,12 @@ public class FrmCalificaciones extends javax.swing.JInternalFrame {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton1;
+    private javax.swing.JComboBox<String> jComboBox1;
+    private javax.swing.JComboBox<String> jComboBox2;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable jTable1;
     // End of variables declaration//GEN-END:variables
 }

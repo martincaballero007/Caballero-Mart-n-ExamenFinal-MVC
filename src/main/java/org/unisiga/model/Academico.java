@@ -9,9 +9,9 @@ public class Academico extends MiembroUniversitario {
     private Departamento departamento; 
     private List<Grupo> gruposDictados; 
 
-    public Academico(String rut, String nombre, String correoInstitucional, 
+    public Academico(String rut, String nombre, String correoInstitucional, String password,
                      String idEmpleado, String tipoContrato, Departamento departamento) {
-        super(rut, nombre, correoInstitucional);
+        super(rut, nombre, correoInstitucional, password);
         this.idEmpleado = idEmpleado;
         this.tipoContrato = tipoContrato;
         this.departamento = departamento;

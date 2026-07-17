@@ -21,6 +21,28 @@ public class Matricula {
         this.calificaciones = new ArrayList<>();
     }
 
+    public void actualizarEstado() {
+        if (calificaciones == null || calificaciones.isEmpty()) {
+            return;
+        }
+        float suma = 0;
+        float ponderacionTotal = 0;
+        for (Calificacion c : calificaciones) {
+            suma += (c.getNota() * (c.getEvaluacion().getPonderacion() / 100f));
+            ponderacionTotal += c.getEvaluacion().getPonderacion();
+        }
+        
+        if (ponderacionTotal >= 100) {
+            if (suma >= 4.0) { // Asumiendo escala donde 4.0 aprueba
+                this.estadoInscripcion = "Aprobado";
+            } else {
+                this.estadoInscripcion = "Reprobado";
+            }
+        } else {
+            this.estadoInscripcion = "Cursando";
+        }
+    }
+
     public String getEstadoInscripcion() {
         return estadoInscripcion;
     }

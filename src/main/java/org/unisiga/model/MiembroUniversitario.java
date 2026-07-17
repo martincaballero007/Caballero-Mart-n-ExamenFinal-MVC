@@ -4,11 +4,13 @@ public abstract class MiembroUniversitario {
     protected String rut;
     protected String nombre;
     protected String correoInstitucional;
+    protected String password;
 
-    public MiembroUniversitario(String rut, String nombre, String correoInstitucional) {
+    public MiembroUniversitario(String rut, String nombre, String correoInstitucional, String password) {
         this.rut = rut;
         this.nombre = nombre;
         this.correoInstitucional = correoInstitucional;
+        this.password = password;
     }
 
     public Boolean login() {
@@ -38,5 +40,13 @@ public abstract class MiembroUniversitario {
 
     public void setCorreoInstitucional(String correoInstitucional) {
         this.correoInstitucional = correoInstitucional;
+    }
+    
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

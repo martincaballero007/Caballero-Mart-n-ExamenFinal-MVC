@@ -4,11 +4,17 @@
  */
 package org.unisiga.view;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import org.unisiga.controller.LoginController;
+
 /**
  *
  * @author odiol
  */
 public class FrmLogin extends javax.swing.JFrame {
+    
+    private LoginController controller;
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(FrmLogin.class.getName());
 
@@ -17,6 +23,15 @@ public class FrmLogin extends javax.swing.JFrame {
      */
     public FrmLogin() {
         initComponents();
+        jButton1.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+    }
+
+    public void setController(LoginController controller) {
+        this.controller = controller;
     }
 
     /**
@@ -100,9 +115,13 @@ public class FrmLogin extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField1ActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {                                         
+        if (controller != null) {
+            String correo = jTextField1.getText();
+            String pass = new String(jPasswordField1.getPassword());
+            controller.iniciarSesion(correo, pass);
+        }
+    }
 
     /**
      * @param args the command line arguments

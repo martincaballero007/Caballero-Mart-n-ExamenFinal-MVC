@@ -9,9 +9,9 @@ public class Estudiante extends MiembroUniversitario {
     private Float promedio;
     private List<Matricula> historialMatriculas;
 
-    public Estudiante(String rut, String nombre, String correoInstitucional, 
+    public Estudiante(String rut, String nombre, String correoInstitucional, String password,
                       String matricula, Integer anioIngreso, Float promedio) {
-        super(rut, nombre, correoInstitucional);
+        super(rut, nombre, correoInstitucional, password);
         this.matricula = matricula;
         this.anioIngreso = anioIngreso;
         this.promedio = promedio;
@@ -20,6 +20,26 @@ public class Estudiante extends MiembroUniversitario {
 
     public void inscribirSeccion() {
         // Lógica para solicitar inscripción a un grupo
+    }
+
+    public boolean tienePrerrequisitosAprobados(Asignatura asignatura) {
+        if (asignatura.getPrerrequisitos() == null || asignatura.getPrerrequisitos().isEmpty()) {
+            return true;
+        }
+        for (Asignatura req : asignatura.getPrerrequisitos()) {
+            boolean aprobado = false;
+            for (Matricula m : historialMatriculas) {
+                if (m.getGrupo().getAsignatura().getCodigo().equals(req.getCodigo()) && 
+                    "Aprobado".equalsIgnoreCase(m.getEstadoInscripcion())) {
+                    aprobado = true;
+                    break;
+                }
+            }
+            if (!aprobado) {
+                return false; 
+            }
+        }
+        return true;
     }
 
     public String getMatricula() {

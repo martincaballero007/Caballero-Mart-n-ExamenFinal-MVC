@@ -22,6 +22,10 @@ public class Grupo {
         this.matriculas = new ArrayList<>();
     }
 
+    public boolean hayCupo() {
+        return matriculas.size() < cupoMaximo;
+    }
+
     public Character getIdGrupo() {
         return idGrupo;
     }

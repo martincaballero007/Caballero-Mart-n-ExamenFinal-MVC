@@ -4,11 +4,16 @@
  */
 package org.unisiga.view;
 
+import javax.swing.JInternalFrame;
+import org.unisiga.controller.MenuController;
+
 /**
  *
  * @author odiol
  */
 public class FrmMenuPrincipal extends javax.swing.JFrame {
+    
+    private MenuController controller;
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(FrmMenuPrincipal.class.getName());
 
@@ -17,6 +22,21 @@ public class FrmMenuPrincipal extends javax.swing.JFrame {
      */
     public FrmMenuPrincipal() {
         initComponents();
+        
+        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem2ActionPerformed(evt);
+            }
+        });
+    }
+
+    public void setController(MenuController controller) {
+        this.controller = controller;
+    }
+    
+    public void agregarVentanaInterna(JInternalFrame frm) {
+        jDesktopPane1.add(frm);
+        frm.setVisible(true);
     }
 
     /**
@@ -82,9 +102,13 @@ public class FrmMenuPrincipal extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jMenuItem1ActionPerformed
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {                                           
+        if (controller != null) controller.abrirInscripcion();
+    }                                          
+
+    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {                                           
+        if (controller != null) controller.abrirCalificaciones();
+    }
 
     /**
      * @param args the command line arguments
